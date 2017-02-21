@@ -1,0 +1,10 @@
+/bin/*
+vendor/*
+dist/
+scripts/
+
+*.bak
+*.log
+
+config*.yml
+sentry
