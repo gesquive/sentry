@@ -69,7 +69,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringP("smtp-server", "x", "localhost",
 		"The SMTP server to send email through")
-	RootCmd.PersistentFlags().Uint32P("smtp-port", "o", 25,
+	RootCmd.PersistentFlags().Uint32P("smtp-port", "r", 25,
 		"The port to use for the SMTP server")
 	RootCmd.PersistentFlags().StringP("smtp-username", "u", "",
 		"Authenticate the SMTP server with this user")
