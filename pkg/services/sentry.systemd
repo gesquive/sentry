@@ -1,0 +1,28 @@
+# copy or hard link to
+#   Debian: /lib/systemd/system/sentry.service
+#   Ubuntu: /etc/systemd/system/sentry.service
+#
+# To start sentry once for USER use:
+#   systemctl start sentry@USER.service
+#
+# To start sentry on boot for USER use:
+#   systemctl enable sentry@USER.service
+#
+# Config should be placed in /etc/sentry/config.yml
+#   or specified with the --config flag below
+
+[Unit]
+Description=sentry monitoring service
+Documentation=https://github.com/gesquive/sentry
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/sentry
+User=sentry
+Group=sentry
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

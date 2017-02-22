@@ -1,0 +1,28 @@
+# More info: https://github.com/gesquive/sentry
+# copy or hard link to
+#   Ubuntu: /etc/init/sentry.conf
+
+description "sentry monitoring service"
+
+start on (started network)
+stop on runlevel [!2345]
+
+respawn
+respawn limit 99 5
+
+script
+
+    export HOME="/srv"
+    echo $$ > /var/run/sentry.pid
+    exec /usr/local/bin/sentry
+
+end script
+
+pre-start script
+    echo "[`date '+%FT%TZ'`] starting service" >> /var/log/sentry.log
+end script
+
+pre-stop script
+    rm /var/run/sentry.pid
+    echo "[`date '+%FT%TZ'`] service stopping" >> /var/log/sentry.log
+end script

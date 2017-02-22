@@ -1,0 +1,28 @@
+log_file: "/var/log/sentry.log"
+no_alerts: false
+run_once: false
+
+smtp:
+    server: localhost
+    port: 25
+    username: ""
+    password: ""
+
+defaults:
+    interval: 1m
+    email: "admin@sentry"
+    follow_redirects: true
+    return_codes: [200]
+
+targets:
+  -
+    name: "Google"
+    url: "https://google.com"
+    email: "yoda@gmail.com"
+  -
+    name: "Yahoo"
+    url: "https://www.yahoo.com"
+    email: "jarjar@yahoo.com"
+    interval: 10s
+    follow_redirects: false
+    return_codes: [200, 201]
