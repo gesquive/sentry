@@ -130,5 +130,5 @@ func getDefaultEmailAddress() string {
 	if err != nil {
 		hostname = "localhost"
 	}
-	return fmt.Sprintf("dispatch@%s", hostname)
+	return fmt.Sprintf("sentry@%s", hostname)
 }
