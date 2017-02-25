@@ -10,7 +10,8 @@ smtp:
 
 defaults:
     interval: 1m
-    email: "admin@sentry"
+    from_email: "sentry@monitor"
+    alert_email: alerts@monitor
     follow_redirects: true
     return_codes: [200]
 
@@ -18,11 +19,11 @@ targets:
   -
     name: "Google"
     url: "https://google.com"
-    email: "yoda@gmail.com"
+    alert_email: "yoda@gmail.com"
   -
     name: "Yahoo"
     url: "https://www.yahoo.com"
-    email: "jarjar@yahoo.com"
+    alert_email: "jarjar@yahoo.com"
     interval: 10s
     follow_redirects: false
     return_codes: [200, 201]

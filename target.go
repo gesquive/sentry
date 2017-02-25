@@ -2,22 +2,25 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/imdario/mergo"
 	"github.com/mitchellh/mapstructure"
+	"github.com/pkg/errors"
 )
 
 // SentryTarget defines an url to monitor
 type SentryTarget struct {
-	Name            string   `mapstructure:"name"`
-	URL             string   `mapstructure:"url"`
-	AlertEmail      string   `mapstructure:"email"`
-	AlertEmailList  []string `mapstructure:"emails"`
-	CheckInterval   string   `mapstructure:"interval"`
-	FollowRedirects bool     `mapstructure:"follow_redirects"`
-	ReturnCodes     []int    `mapstructure:"return_codes"`
+	Name            string      `mapstructure:"name"`
+	URL             string      `mapstructure:"url"`
+	CheckInterval   string      `mapstructure:"interval"`
+	FollowRedirects bool        `mapstructure:"follow_redirects"`
+	ReturnCodes     []int       `mapstructure:"return_codes"`
+	FromEmail       string      `mapstructure:"from_email"`
+	AlertEmail      interface{} `mapstructure:"alert_email"`
+	AlertEmailList  []string
 	interval        time.Duration
 	nextCheckTime   time.Time
 	LastReturnCode  int
@@ -29,7 +32,7 @@ func NewTarget(val interface{}) (*SentryTarget, error) {
 	t := new(SentryTarget)
 	err := mapstructure.Decode(val, t)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing target: %v", err)
+		return nil, errors.Wrapf(err, "error decoding target")
 	}
 
 	var targetMap map[string]interface{}
@@ -42,7 +45,7 @@ func NewTarget(val interface{}) (*SentryTarget, error) {
 			targetMap[key.(string)] = value
 		}
 	default:
-		return nil, fmt.Errorf("target is an unknown format")
+		return nil, errors.Errorf("target is an unknown format: %v", reflect.TypeOf(val))
 	}
 
 	if v, ok := targetMap["follow_redirects"]; ok {
@@ -53,27 +56,50 @@ func NewTarget(val interface{}) (*SentryTarget, error) {
 	if len(t.CheckInterval) > 0 {
 		t.interval, err = time.ParseDuration(t.CheckInterval)
 		if err != nil {
-			return nil, fmt.Errorf("error parsing interval: %v", err)
+			return nil, errors.Wrapf(err, "error parsing interval target=%s", t.Name)
 		}
 	}
 	t.nextCheckTime = time.Now().UTC()
 	t.nextCheckTime = t.nextCheckTime.Add(time.Duration(-1 * t.nextCheckTime.Nanosecond()))
 	t.CurrentState = true
-	var verifiedEmails []string
-	verifiedEmail, err := FormatEmail(t.AlertEmail)
-	if err != nil {
-		return nil, err
-	}
-	verifiedEmails = append(verifiedEmails, verifiedEmail)
-	for _, email := range t.AlertEmailList {
-		verifiedEmail, err := FormatEmail(email)
+
+	switch t.AlertEmail.(type) {
+	case string:
+		verifiedEmail, err := FormatEmail(t.AlertEmail.(string))
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrapf(err, "error parsing '%s' target=%s", t.AlertEmail.(string), t.Name)
 		}
-		verifiedEmails = append(verifiedEmails, verifiedEmail)
+		t.AlertEmailList = []string{verifiedEmail}
+	case []string:
+		for _, email := range t.AlertEmail.([]string) {
+			verifiedEmail, err := FormatEmail(email)
+			if err != nil {
+				return nil, errors.Wrapf(err, "error parsing '%s' target=%s", email, t.Name)
+			}
+			t.AlertEmailList = append(t.AlertEmailList, verifiedEmail)
+		}
+	case []interface{}:
+		for _, email := range t.AlertEmail.([]interface{}) {
+			verifiedEmail, err := FormatEmail(email.(string))
+			if err != nil {
+				return nil, errors.Wrapf(err, "error parsing '%s' target=%s", email, t.Name)
+			}
+			t.AlertEmailList = append(t.AlertEmailList, verifiedEmail)
+		}
+	case nil:
+		// Do nothing
+	default:
+		return nil, errors.Errorf("unknown type for \"alert_email\" field. name=%s type=%v",
+			t.Name, reflect.TypeOf(t.AlertEmail))
 	}
-	t.AlertEmailList = verifiedEmails
-	t.AlertEmail = ""
+
+	if len(t.FromEmail) > 0 {
+		verifiedEmail, err := FormatEmail(t.FromEmail)
+		if err != nil {
+			return nil, errors.Wrapf(err, "email format not valid: %s", t.FromEmail)
+		}
+		t.FromEmail = verifiedEmail
+	}
 	return t, nil
 }
 
@@ -98,7 +124,7 @@ func (t *SentryTarget) SpawnTarget(val interface{}) (*SentryTarget, error) {
 			targetMap[key.(string)] = value
 		}
 	default:
-		return nil, fmt.Errorf("target is an unknown format")
+		return nil, errors.Errorf("target is an unknown format: %v", reflect.TypeOf(val))
 	}
 
 	if v, ok := targetMap["follow_redirects"]; ok {
