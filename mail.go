@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"net/mail"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 
 	gomail "gopkg.in/gomail.v2"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/pkg/errors"
 )
 
 // Message defines a message to send
@@ -131,4 +133,37 @@ func getDefaultEmailAddress() string {
 		hostname = "localhost"
 	}
 	return fmt.Sprintf("sentry@%s", hostname)
+}
+
+func decodeVerifiedEmailList(val interface{}) ([]string, error) {
+	var verifiedEmailList []string
+	switch val.(type) {
+	case string:
+		verifiedEmail, err := FormatEmail(val.(string))
+		if err != nil {
+			return nil, errors.Wrapf(err, "error parsing '%s'", val.(string))
+		}
+		verifiedEmailList = []string{verifiedEmail}
+	case []string:
+		for _, email := range val.([]string) {
+			verifiedEmail, err := FormatEmail(email)
+			if err != nil {
+				return nil, errors.Wrapf(err, "error parsing '%s'", email)
+			}
+			verifiedEmailList = append(verifiedEmailList, verifiedEmail)
+		}
+	case []interface{}:
+		for _, email := range val.([]interface{}) {
+			verifiedEmail, err := FormatEmail(email.(string))
+			if err != nil {
+				return nil, errors.Wrapf(err, "error parsing '%s'", email)
+			}
+			verifiedEmailList = append(verifiedEmailList, verifiedEmail)
+		}
+	case nil:
+		// Do nothing
+	default:
+		return nil, errors.Errorf("unknown type. type=%v", reflect.TypeOf(val))
+	}
+	return verifiedEmailList, nil
 }

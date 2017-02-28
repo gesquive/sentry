@@ -35,17 +35,9 @@ func NewTarget(val interface{}) (*SentryTarget, error) {
 		return nil, errors.Wrapf(err, "error decoding target")
 	}
 
-	var targetMap map[string]interface{}
-	switch val.(type) {
-	case map[string]interface{}:
-		targetMap = val.(map[string]interface{})
-	case map[interface{}]interface{}:
-		targetMap = make(map[string]interface{})
-		for key, value := range val.(map[interface{}]interface{}) {
-			targetMap[key.(string)] = value
-		}
-	default:
-		return nil, errors.Errorf("target is an unknown format: %v", reflect.TypeOf(val))
+	targetMap, err := getRawTargetMap(val)
+	if err != nil {
+		return nil, errors.Wrapf(err, "incorrect target type")
 	}
 
 	if v, ok := targetMap["follow_redirects"]; ok {
@@ -63,34 +55,9 @@ func NewTarget(val interface{}) (*SentryTarget, error) {
 	t.nextCheckTime = t.nextCheckTime.Add(time.Duration(-1 * t.nextCheckTime.Nanosecond()))
 	t.CurrentState = true
 
-	switch t.AlertEmail.(type) {
-	case string:
-		verifiedEmail, err := FormatEmail(t.AlertEmail.(string))
-		if err != nil {
-			return nil, errors.Wrapf(err, "error parsing '%s' target=%s", t.AlertEmail.(string), t.Name)
-		}
-		t.AlertEmailList = []string{verifiedEmail}
-	case []string:
-		for _, email := range t.AlertEmail.([]string) {
-			verifiedEmail, err := FormatEmail(email)
-			if err != nil {
-				return nil, errors.Wrapf(err, "error parsing '%s' target=%s", email, t.Name)
-			}
-			t.AlertEmailList = append(t.AlertEmailList, verifiedEmail)
-		}
-	case []interface{}:
-		for _, email := range t.AlertEmail.([]interface{}) {
-			verifiedEmail, err := FormatEmail(email.(string))
-			if err != nil {
-				return nil, errors.Wrapf(err, "error parsing '%s' target=%s", email, t.Name)
-			}
-			t.AlertEmailList = append(t.AlertEmailList, verifiedEmail)
-		}
-	case nil:
-		// Do nothing
-	default:
-		return nil, errors.Errorf("unknown type for \"alert_email\" field. name=%s type=%v",
-			t.Name, reflect.TypeOf(t.AlertEmail))
+	t.AlertEmailList, err = decodeVerifiedEmailList(t.AlertEmail)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error parsing alert_email target=%s", t.Name)
 	}
 
 	if len(t.FromEmail) > 0 {
@@ -114,17 +81,9 @@ func (t *SentryTarget) SpawnTarget(val interface{}) (*SentryTarget, error) {
 		return nil, err
 	}
 
-	var targetMap map[string]interface{}
-	switch val.(type) {
-	case map[string]interface{}:
-		targetMap = val.(map[string]interface{})
-	case map[interface{}]interface{}:
-		targetMap = make(map[string]interface{})
-		for key, value := range val.(map[interface{}]interface{}) {
-			targetMap[key.(string)] = value
-		}
-	default:
-		return nil, errors.Errorf("target is an unknown format: %v", reflect.TypeOf(val))
+	targetMap, err := getRawTargetMap(val)
+	if err != nil {
+		return nil, errors.Wrapf(err, "incorrect target type")
 	}
 
 	if v, ok := targetMap["follow_redirects"]; ok {
@@ -163,4 +122,21 @@ func (t *SentryTarget) IsStatusValid(statusCode int) bool {
 		}
 	}
 	return false
+}
+
+func getRawTargetMap(val interface{}) (map[string]interface{}, error) {
+	var targetMap map[string]interface{}
+	switch val.(type) {
+	case map[string]interface{}:
+		targetMap = val.(map[string]interface{})
+	case map[interface{}]interface{}:
+		targetMap = make(map[string]interface{})
+		for key, value := range val.(map[interface{}]interface{}) {
+			targetMap[key.(string)] = value
+		}
+	default:
+		return nil, errors.Errorf("target is an unknown format: %v", reflect.TypeOf(val))
+	}
+
+	return targetMap, nil
 }
