@@ -206,7 +206,7 @@ func run(cmd *cobra.Command, args []string) {
 func getTargetConfigs(config []interface{}, defaults interface{}) ([]SentryTarget, error) {
 	defaultTarget, err := NewTarget(defaults)
 	if err != nil {
-		log.Errorf("default values invalid %v", err)
+		log.Errorf("default values invalid - %v", err)
 		return nil, err
 	}
 	var targets []SentryTarget
