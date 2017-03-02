@@ -6,7 +6,6 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/pkg/errors"
 )
 
 // Sentry is the monitoring object
@@ -54,7 +53,7 @@ func (s *Sentry) Run() {
 func (s *Sentry) CheckLink(target *SentryTarget) bool {
 	statusCode, err := getHTTPStatus("GET", target.URL, s.userAgent, target.FollowRedirects)
 	if err != nil {
-		log.Errorf("Error getting http stats of '%s'", target.URL)
+		log.Errorf("Error getting http status of '%s' err=%v", target.URL, err)
 	}
 	// log.Debugf("target: checked %s, got %d", target.Name, statusCode)
 	target.LastReturnCode = statusCode
@@ -78,7 +77,7 @@ func getHTTPStatus(method string, url string, userAgent string, followRedirects 
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if !followRedirects {
-				return errors.Errorf("Redirects not allowed")
+				return http.ErrUseLastResponse
 			}
 			return nil
 		},
