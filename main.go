@@ -13,7 +13,7 @@ import (
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
-var version = "v0.2.1"
+var version = "v0.2.2"
 var dirty = ""
 
 var cfgFile string

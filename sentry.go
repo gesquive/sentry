@@ -101,10 +101,10 @@ func (s *Sentry) sendStatusAlert(target SentryTarget) {
 	var msg Message
 	var statusMsg string
 	if target.CurrentState {
-		msg.Subject = fmt.Sprintf("[sentry] site online: %s", target.Name)
+		msg.Subject = fmt.Sprintf("[sentry] site alert: %s", target.Name)
 		statusMsg = fmt.Sprintf("URL is back online: %s", target.URL)
 	} else {
-		msg.Subject = fmt.Sprintf("[sentry] site offline: %s", target.Name)
+		msg.Subject = fmt.Sprintf("[sentry] site alert: %s", target.Name)
 		statusMsg = fmt.Sprintf("Received an unexpected return code when requesting URL %s", target.URL)
 	}
 	msg.ToAddressList = target.AlertEmailList
