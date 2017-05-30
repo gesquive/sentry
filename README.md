@@ -1,4 +1,7 @@
 # sentry
+[![Travis CI](https://img.shields.io/travis/gesquive/sentry/master.svg?style=flat-square)](https://travis-ci.org/gesquive/sentry)
+[![Software License](https://img.shields.io/badge/License-MIT-orange.svg?style=flat-square)](https://github.com/gesquive/sentry/blob/master/LICENSE.md)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/gesquive/sentry)
 
 An URL monitoring alerting service.
 
