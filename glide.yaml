@@ -1,15 +1,15 @@
-package: .
+package: github.com/gesquive/sentry
 import:
 - package: github.com/Sirupsen/logrus
-  version: ^0.11.4
+  version: ~0.11.5
 - package: github.com/imdario/mergo
-  version: ^0.2.2
+  version: ~0.2.2
 - package: github.com/mitchellh/mapstructure
 - package: github.com/pkg/errors
-  version: ^0.8.0
+  version: ~0.8.0
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper
 - package: github.com/x-cray/logrus-prefixed-formatter
-  version: ^0.3.2
+  version: ~0.4.0
 - package: gopkg.in/gomail.v2
-  version: ^2.0.0
+  version: ~2.0.0

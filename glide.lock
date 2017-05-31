@@ -1,10 +1,10 @@
-hash: 1044b67371662859a0eccb87da5ea53c5c407ee6802f92b756c0660b448e1efa
-updated: 2017-02-28T08:25:15.564215306-06:00
+hash: e81d0364e0b800fccd5025c3c23bc6f6bcbd25e85e9637f4a56d8eca5130b8b3
+updated: 2017-06-05T17:51:40.358553812-05:00
 imports:
 - name: github.com/fsnotify/fsnotify
-  version: a904159b9206978bb6d53fcc7a769e5cd726c737
+  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
-  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -19,52 +19,54 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/magiconair/properties
-  version: b3b15ef068fd0b17ddf408a23669f20811d194d2
+  version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mattn/go-colorable
-  version: d898aa9fb31c91f35dd28ca75db377eff023c076
+  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
 - name: github.com/mattn/go-isatty
-  version: dda3de49cbfcec471bd7a70e6cc01fcc3ff90109
+  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
 - name: github.com/mgutz/ansi
   version: 9520e82c474b0a04dd04f8a40959027271bab992
 - name: github.com/mitchellh/mapstructure
-  version: db1efb556f84b25a0a13a04aad883943538ad2e0
+  version: d0303fe809921458f417bcf828397a65db30a7e4
 - name: github.com/pelletier/go-buffruneio
   version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
-  version: 361678322880708ac144df8575e6f01144ba1404
+  version: fe7536c3dee2596cdd23ee9976a17c22bdaae286
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/Sirupsen/logrus
-  version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/spf13/afero
   version: 9be650865eab0c12963d8753212f4f9c66cdcf12
   subpackages:
   - mem
 - name: github.com/spf13/cast
-  version: f820543c3592e283e311a60d2a600a664e39f6f7
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: 92ea23a837e66f46ac9e7d04fa826602b7b0a42d
+  version: 84f471618b363c4e298af84c2b53aa4f687c5f70
 - name: github.com/spf13/jwalterweatherman
-  version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
+  version: 0efa5202c04663c757d84f90f5219c1250baf94f
 - name: github.com/spf13/pflag
-  version: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
-  version: 7538d73b4eb9511d85a9f1dfef202eeb8ac260f4
+  version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
 - name: github.com/x-cray/logrus-prefixed-formatter
-  version: 9cd0cf058806896bf8ca66f9a957d36bd9e4ce0f
+  version: 54b7cd10b359d569484cc6b6ffd21d4649dcd148
 - name: golang.org/x/sys
-  version: e4594059fe4cde2daf423055a596c2cd1e6c9adf
+  version: b90f89a1e7a9c1f6b918820b3daa7f08488c8594
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 0ad425fe45e885577bef05dc1c50f72e33188b16
+  version: ccbd3f7822129ff389f8ca4858a9b9d4d910531c
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/alexcesaro/quotedprintable.v3
   version: 2caba252f4dc53eaf6b553000885530023f54623
+- name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
+  version: e928b033a891c0175fb643d5aa0779e86325eb12
 - name: gopkg.in/gomail.v2
   version: 81ebce5c23dfd25c6c67194b37d3dd3f338c98b1
 - name: gopkg.in/yaml.v2
-  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports: []
